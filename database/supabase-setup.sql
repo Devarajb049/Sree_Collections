@@ -4,29 +4,25 @@
 -- Run this script in your Supabase SQL Editor:
 -- https://supabase.com/dashboard/project/<your-project-id>/sql
 -- 
--- This script configures:
+-- Configures:
 -- 1. PostgreSQL Products table with all saree attributes
 -- 2. Automatic timestamps via trigger
 -- 3. Row Level Security (RLS) protecting customer & admin data
 -- 4. Supabase Storage bucket ('saree-images') with public read access
--- 5. Curated initial catalogue seed data
+-- 5. Curated initial catalogue seed data (English default)
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
--- 1. CLEANUP (Optional - only if recreating table)
--- ---------------------------------------------------------------------
--- DROP TABLE IF EXISTS public.products CASCADE;
-
--- ---------------------------------------------------------------------
--- 2. CREATE PRODUCTS TABLE
+-- 1. CREATE PRODUCTS TABLE
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.products (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     sku VARCHAR(50) UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
-    title_te VARCHAR(255),
+    slug VARCHAR(255),
     category VARCHAR(100) NOT NULL,
     fabric VARCHAR(100) NOT NULL,
+    color VARCHAR(100),
     colors TEXT[] DEFAULT '{}',
     price NUMERIC(10, 2) NOT NULL CHECK (price >= 0),
     original_price NUMERIC(10, 2) CHECK (original_price IS NULL OR original_price >= price),
@@ -37,7 +33,7 @@ CREATE TABLE IF NOT EXISTS public.products (
     saree_length VARCHAR(50) DEFAULT '6.3 Meters (including blouse)',
     care_instructions VARCHAR(255) DEFAULT 'Dry Clean Only',
     image_url TEXT NOT NULL,
-    additional_images TEXT[] DEFAULT '{}',
+    images TEXT[] DEFAULT '{}',
     stock_quantity INTEGER DEFAULT 5 CHECK (stock_quantity >= 0),
     stock_status VARCHAR(50) DEFAULT 'in_stock' CHECK (stock_status IN ('in_stock', 'low_stock', 'out_of_stock')),
     is_featured BOOLEAN DEFAULT false,
@@ -49,14 +45,14 @@ CREATE TABLE IF NOT EXISTS public.products (
     updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Index for high-performance category and search queries
+-- Indexes for high-performance category and search queries
 CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
 CREATE INDEX IF NOT EXISTS idx_products_is_active ON public.products(is_active);
 CREATE INDEX IF NOT EXISTS idx_products_price ON public.products(price);
 CREATE INDEX IF NOT EXISTS idx_products_created_at ON public.products(created_at DESC);
 
 -- ---------------------------------------------------------------------
--- 3. AUTOMATIC UPDATED_AT TRIGGER
+-- 2. AUTOMATIC UPDATED_AT TRIGGER
 -- ---------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
 RETURNS TRIGGER AS $$
@@ -73,12 +69,12 @@ CREATE TRIGGER trigger_products_updated_at
     EXECUTE FUNCTION public.handle_updated_at();
 
 -- ---------------------------------------------------------------------
--- 4. ROW LEVEL SECURITY (RLS) POLICIES
+-- 3. ROW LEVEL SECURITY (RLS) POLICIES
 -- ---------------------------------------------------------------------
 -- Enable RLS on the products table
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 
--- 4.1. Public Read Policy:
+-- 3.1. Public Read Policy:
 -- Unauthenticated customers can ONLY view products where is_active = true
 DROP POLICY IF EXISTS "Public can view active products" ON public.products;
 CREATE POLICY "Public can view active products"
@@ -87,8 +83,8 @@ CREATE POLICY "Public can view active products"
     TO anon, authenticated
     USING (is_active = true);
 
--- 4.2. Authenticated Admin Policies:
--- Logged in showroom administrators have full SELECT, INSERT, UPDATE, DELETE permissions
+-- 3.2. Authenticated Admin Policies:
+-- Logged-in administrators have full SELECT, INSERT, UPDATE, DELETE permissions
 DROP POLICY IF EXISTS "Admins can view all products" ON public.products;
 CREATE POLICY "Admins can view all products"
     ON public.products
@@ -119,14 +115,14 @@ CREATE POLICY "Admins can delete products"
     USING (true);
 
 -- ---------------------------------------------------------------------
--- 5. STORAGE BUCKET CONFIGURATION FOR SAREE IMAGES
+-- 4. STORAGE BUCKET CONFIGURATION FOR SAREE IMAGES
 -- ---------------------------------------------------------------------
 -- Create 'saree-images' public bucket if not already created
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('saree-images', 'saree-images', true)
 ON CONFLICT (id) DO UPDATE SET public = true;
 
--- 5.1. Allow anyone to view saree images (Public Read)
+-- 4.1. Allow anyone to view saree images (Public Read)
 DROP POLICY IF EXISTS "Public can read saree images" ON storage.objects;
 CREATE POLICY "Public can read saree images"
     ON storage.objects
@@ -134,7 +130,7 @@ CREATE POLICY "Public can read saree images"
     TO anon, authenticated
     USING (bucket_id = 'saree-images');
 
--- 5.2. Allow authenticated admins to upload new saree photos
+-- 4.2. Allow authenticated admins to upload new saree photos
 DROP POLICY IF EXISTS "Admins can upload saree images" ON storage.objects;
 CREATE POLICY "Admins can upload saree images"
     ON storage.objects
@@ -142,7 +138,7 @@ CREATE POLICY "Admins can upload saree images"
     TO authenticated
     WITH CHECK (bucket_id = 'saree-images');
 
--- 5.3. Allow authenticated admins to update/replace saree photos
+-- 4.3. Allow authenticated admins to update/replace saree photos
 DROP POLICY IF EXISTS "Admins can update saree images" ON storage.objects;
 CREATE POLICY "Admins can update saree images"
     ON storage.objects
@@ -150,7 +146,7 @@ CREATE POLICY "Admins can update saree images"
     TO authenticated
     USING (bucket_id = 'saree-images');
 
--- 5.4. Allow authenticated admins to delete saree photos
+-- 4.4. Allow authenticated admins to delete saree photos
 DROP POLICY IF EXISTS "Admins can delete saree images" ON storage.objects;
 CREATE POLICY "Admins can delete saree images"
     ON storage.objects
@@ -159,11 +155,10 @@ CREATE POLICY "Admins can delete saree images"
     USING (bucket_id = 'saree-images');
 
 -- ---------------------------------------------------------------------
--- 6. SAMPLE SEED DATA (Curated Saree Catalogue)
+-- 5. INITIAL SEED DATA (Curated Saree Catalogue)
 -- ---------------------------------------------------------------------
--- Note: Royalty-free traditional Indian saree & silk photography URLs
 INSERT INTO public.products (
-    sku, title, title_te, category, fabric, colors, price, original_price,
+    sku, title, slug, category, fabric, color, colors, price, original_price,
     short_description, description, blouse_details, zari_type, saree_length,
     care_instructions, image_url, stock_quantity, stock_status,
     is_featured, is_new_arrival, is_best_seller, is_active, is_demo
@@ -171,9 +166,10 @@ INSERT INTO public.products (
 (
     'SRC-101',
     'Royal Crimson Kanchipuram Pure Silk Saree',
-    'రాయల్ క్రిమ్సన్ కాంచీపురం ప్యూర్ పట్టు చీర',
+    'royal-crimson-kanchipuram-pure-silk-saree',
     'Kanchipuram Silk Sarees',
     'Pure Kanchipuram Mulberry Silk',
+    'Crimson Red & Royal Gold',
     ARRAY['Crimson Red', 'Royal Gold'],
     18499.00,
     23999.00,
@@ -195,9 +191,10 @@ INSERT INTO public.products (
 (
     'SRC-102',
     'Varanasi Midnight Navy Banarasi Katan Silk Saree',
-    'వారణాసి మిడ్‌నైట్ నేవీ బనారసి కటాన్ పట్టు చీర',
+    'varanasi-midnight-navy-banarasi-katan-silk-saree',
     'Banarasi Sarees',
     'Pure Katan Silk',
+    'Midnight Navy Blue & Antique Gold',
     ARRAY['Midnight Navy Blue', 'Antique Gold'],
     15999.00,
     19999.00,
@@ -219,9 +216,10 @@ INSERT INTO public.products (
 (
     'SRC-103',
     'Emerald Green Dharmavaram Wedding Pattu Saree',
-    'ఎమరాల్డ్ గ్రీన్ ధర్మవరం పెళ్లి పట్టు చీర',
+    'emerald-green-dharmavaram-wedding-pattu-saree',
     'Wedding Sarees',
     'Pure Heavy Pattu Silk',
+    'Emerald Green & Rani Pink',
     ARRAY['Emerald Green', 'Rani Pink'],
     21999.00,
     27500.00,
@@ -243,9 +241,10 @@ INSERT INTO public.products (
 (
     'SRC-104',
     'Gadwal Pure Handloom Silk Saree with Kuttu Border',
-    'గద్వాల్ ప్యూర్ చేనేత పట్టు చీర కుట్టు బోర్డర్‌తో',
+    'gadwal-pure-handloom-silk-saree-kuttu-border',
     'Pattu Sarees',
     'Pure Gadwal Silk & Cotton Body',
+    'Mustard Yellow & Deep Purple',
     ARRAY['Mustard Yellow', 'Deep Purple'],
     12499.00,
     15500.00,
@@ -267,16 +266,17 @@ INSERT INTO public.products (
 (
     'SRC-105',
     'Traditional Mangalagiri Pure Cotton Saree with Nizam Border',
-    'సాంప్రదాయ మంగళగిరి ప్యూర్ కాటన్ చీర నిజాం బోర్డర్‌తో',
+    'traditional-mangalagiri-pure-cotton-saree-nizam-border',
     'Cotton Sarees',
     '100% Pure Combed Handloom Cotton (80s count)',
-    ARRAY['Ivory White', 'Ganga Jamuna Maroon & Green'],
+    'Ivory White & Ganga-Jamuna Border',
+    ARRAY['Ivory White', 'Maroon', 'Forest Green'],
     2899.00,
     3699.00,
     'Graceful ivory Mangalagiri handloom cotton with authentic Nizam gold zari border and striped pallu.',
     'Woven in the temple town of Mangalagiri, Andhra Pradesh. Pure breathable cotton certified for supreme comfort during summer, puja rituals, office wear, and classical celebrations.',
     'Running Ivory Cotton Blouse with Zari border (80 cm)',
-    'Fine Zari',
+    'Fine Gold Zari',
     '6.2 Meters (with blouse)',
     'Gentle Handwash / Mild Detergent',
     'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=900&q=80',
@@ -291,9 +291,10 @@ INSERT INTO public.products (
 (
     'SRC-106',
     'Pastel Peach Floral Organza Silk Saree with Scallop Border',
-    'పాస్టెల్ పీచ్ ఫ్లోరల్ ఆర్గాంజా పట్టు చీర స్కాలాప్ బోర్డర్‌తో',
+    'pastel-peach-floral-organza-silk-saree-scallop-border',
     'Fancy Sarees',
     'Premium Sheer Organza Silk',
+    'Pastel Peach & Champagne Gold',
     ARRAY['Pastel Peach', 'Champagne Gold'],
     4999.00,
     6499.00,
@@ -315,9 +316,10 @@ INSERT INTO public.products (
 (
     'SRC-107',
     'Pochampally Ikat Handloom Silk Saree',
-    'పోచంపల్లి ఇక్కత్ చేనేత పట్టు చీర',
+    'pochampally-ikat-handloom-silk-saree',
     'Pattu Sarees',
     'Pure Mulberry Ikat Silk',
+    'Black, Ruby Red & White',
     ARRAY['Black', 'Ruby Red', 'White'],
     9899.00,
     12999.00,
@@ -339,16 +341,17 @@ INSERT INTO public.products (
 (
     'SRC-108',
     'Grand Muhurtham Sindoor Red Bridal Kanchipuram Saree',
-    'గ్రాండ్ ముహూర్తం సింధూరం రెడ్ పెళ్లి కాంచీపురం పట్టు చీర',
+    'grand-muhurtham-sindoor-red-bridal-kanchipuram-saree',
     'Wedding Sarees',
     'Pure Kanchipuram Brocade Silk',
+    'Sindoor Red & Pure Gold',
     ARRAY['Sindoor Red', 'Pure Gold'],
     28999.00,
     34999.00,
     'Magnificent royal bridal Kanchipuram silk with full body gold brocade jaal, Gandaberunda motifs and heavy pallu.',
     'The pinnacle of South Indian bridal elegance. Crafted over 24 days on pit looms with genuine heavy silk weight (over 850 grams) and certified tested zari. A heirloom saree to cherish for generations.',
     'Heavy All-over Zari Brocade Blouse (90 cm)',
-    'Authentic Gold Zari',
+    'Authentic Pure Gold Zari',
     '6.3 Meters (with blouse)',
     'Dry Clean Only',
     'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&q=80',
@@ -363,9 +366,10 @@ INSERT INTO public.products (
 (
     'SRC-109',
     'Chanderi Silk Cotton Saree with Silver Zari Buttas',
-    'చందేరి పట్టు కాటన్ చీర సిల్వర్ జరీ బుట్టాలతో',
+    'chanderi-silk-cotton-saree-silver-zari-buttas',
     'Cotton Sarees',
     'Chanderi Silk-Cotton Blend',
+    'Powder Blue & Silver',
     ARRAY['Powder Blue', 'Silver'],
     3499.00,
     4499.00,
@@ -387,9 +391,10 @@ INSERT INTO public.products (
 (
     'SRC-110',
     'Handblock Indigo Kalamkari Soft Mulmul Cotton Saree',
-    'హ్యాండ్‌బ్లాక్ ఇండిగో కలంకారి సాఫ్ట్ ముల్‌ముల్ కాటన్ చీర',
+    'handblock-indigo-kalamkari-soft-mulmul-cotton-saree',
     'Daily Wear Sarees',
     'Pure 100% Breathable Mulmul Cotton',
+    'Indigo Blue & Earthy Ochre',
     ARRAY['Indigo Blue', 'Earthy Ochre'],
     1699.00,
     2299.00,
@@ -411,9 +416,10 @@ INSERT INTO public.products (
 (
     'SRC-111',
     'Royal Gulabi Pink Banarasi Tanchoi Silk Saree',
-    'రాయల్ గులాబీ పింక్ బనారసి తాంచోయ్ పట్టు చీర',
+    'royal-gulabi-pink-banarasi-tanchoi-silk-saree',
     'Banarasi Sarees',
     'Pure Tanchoi Satin Silk',
+    'Gulabi Pink & Rose Gold',
     ARRAY['Gulabi Pink', 'Rose Gold'],
     13999.00,
     17499.00,
@@ -435,9 +441,10 @@ INSERT INTO public.products (
 (
     'SRC-112',
     'Lavender Georgette Fancy Saree with Foil Mirror Work',
-    'లావెండర్ జార్జెట్ ఫ్యాన్సీ చీర ఫాయిల్ మిర్రర్ వర్క్‌తో',
+    'lavender-georgette-fancy-saree-foil-mirror-work',
     'Fancy Sarees',
     'Premium Viscose Georgette',
+    'Lavender & Silver',
     ARRAY['Lavender', 'Silver'],
     3999.00,
     5299.00,
@@ -457,13 +464,3 @@ INSERT INTO public.products (
     false
 )
 ON CONFLICT (sku) DO NOTHING;
-
--- =====================================================================
--- STEP 7: CREATE FIRST ADMIN ACCOUNT IN SUPABASE AUTH
--- =====================================================================
--- Note: You can create your admin user directly in the Supabase Dashboard:
--- 1. Go to Authentication -> Users -> Add User -> Create User
--- 2. Enter admin email (e.g. admin@sreecollections.com) and a strong password
--- 3. Confirm the email directly or toggle "Auto Confirm Email"
--- 4. Login at your-domain/admin.html with these credentials!
--- =====================================================================
