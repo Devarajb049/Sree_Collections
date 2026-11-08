@@ -35,7 +35,7 @@ const AdminDashboard = () => {
   // Form State
   const [formData, setFormData] = useState({
     sku: '',
-    name: '',
+    title: '',
     category: 'Kanchipuram Silk Sarees',
     fabric: 'Pure Mulberry Silk',
     colors: '',
@@ -91,7 +91,7 @@ const AdminDashboard = () => {
     setEditingItem(null);
     setFormData({
       sku: `SRC-${products.length + 101}`,
-      name: '',
+      title: '',
       category: 'Kanchipuram Silk Sarees',
       fabric: 'Pure Mulberry Silk',
       colors: '',
@@ -121,7 +121,7 @@ const AdminDashboard = () => {
     setEditingItem(item);
     setFormData({
       sku: item.sku || '',
-      name: item.name || item.title || '',
+      title: item.title || item.name || '',
       category: item.category || 'Kanchipuram Silk Sarees',
       fabric: item.fabric || '',
       colors: Array.isArray(item.colors) ? item.colors.join(', ') : (item.color || ''),
@@ -158,8 +158,8 @@ const AdminDashboard = () => {
 
   const handleSaveProduct = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.sku || !formData.price) {
-      alert('Please fill in Saree Name, SKU Code, and Price.');
+    if (!formData.title || !formData.sku || !formData.price) {
+      alert('Please fill in Saree Title, SKU Code, and Price.');
       return;
     }
 
@@ -169,20 +169,36 @@ const AdminDashboard = () => {
         ? formData.colors.split(',').map(c => c.trim()).filter(Boolean)
         : [];
 
+      // Clean payload strictly adhering to database schema (no 'name' property)
       const payload = {
-        ...formData,
+        sku: formData.sku,
+        title: formData.title,
+        category: formData.category,
+        fabric: formData.fabric,
+        colors: colorsArray,
         price: parseFloat(formData.price),
         original_price: formData.original_price ? parseFloat(formData.original_price) : null,
         stock_quantity: parseInt(formData.stock_quantity, 10) || 0,
-        colors: colorsArray
+        stock_status: formData.stock_status,
+        short_description: formData.short_description,
+        description: formData.description,
+        blouse_details: formData.blouse_details,
+        zari_type: formData.zari_type,
+        saree_length: formData.saree_length,
+        care_instructions: formData.care_instructions,
+        image_url: formData.image_url,
+        is_featured: formData.is_featured,
+        is_new_arrival: formData.is_new_arrival,
+        is_best_seller: formData.is_best_seller,
+        is_active: formData.is_active
       };
 
       if (editingItem) {
         await updateProduct(editingItem.id || editingItem.sku, payload, imageFile);
-        showToast(`Saree "${formData.name}" updated successfully!`);
+        showToast(`Saree "${formData.title}" updated successfully!`);
       } else {
         await createProduct(payload, imageFile);
-        showToast(`New saree "${formData.name}" added to inventory!`);
+        showToast(`New saree "${formData.title}" added to inventory!`);
       }
 
       setIsModalOpen(false);
@@ -242,7 +258,7 @@ const AdminDashboard = () => {
   // Filter products for table display
   const filteredProducts = products.filter(p => {
     const q = search.toLowerCase().trim();
-    const title = (p.name || p.title || '').toLowerCase();
+    const title = (p.title || p.name || '').toLowerCase();
     const sku = (p.sku || '').toLowerCase();
     const fabric = (p.fabric || '').toLowerCase();
     const matchesSearch = !q || title.includes(q) || sku.includes(q) || fabric.includes(q);
@@ -433,7 +449,7 @@ const AdminDashboard = () => {
                   {filteredProducts.map((p) => {
                     const isOut = p.stock_status === 'out_of_stock';
                     const isLow = p.stock_status === 'low_stock';
-                    const title = p.name || p.title;
+                    const title = p.title || p.name;
 
                     return (
                       <tr key={p.id || p.sku}>
@@ -541,7 +557,7 @@ const AdminDashboard = () => {
         <div className="admin-modal-overlay open">
           <div className="admin-modal">
             <div className="modal-header">
-              <h2>{editingItem ? `Edit Saree: ${editingItem.name || editingItem.title}` : 'Add New Saree to Showroom'}</h2>
+              <h2>{editingItem ? `Edit Saree: ${editingItem.title || editingItem.name}` : 'Add New Saree to Showroom'}</h2>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
@@ -582,11 +598,11 @@ const AdminDashboard = () => {
               </div>
 
               <div className="form-group" style={{ marginTop: '1rem' }}>
-                <label className="form-label">Saree Name / Title *</label>
+                <label className="form-label">Saree Title *</label>
                 <input
                   type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="e.g. Royal Maroon Kanchipuram Pure Silk Saree"
                   className="form-input"
                   required
@@ -828,7 +844,7 @@ const AdminDashboard = () => {
               Delete Saree?
             </h3>
             <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', marginBottom: '1.5rem' }}>
-              Are you sure you want to permanently remove <strong>{deleteCandidate.name || deleteCandidate.title}</strong> ({deleteCandidate.sku})?
+              Are you sure you want to permanently remove <strong>{deleteCandidate.title || deleteCandidate.name}</strong> ({deleteCandidate.sku})?
             </p>
 
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
