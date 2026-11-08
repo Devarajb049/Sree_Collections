@@ -192,8 +192,9 @@ const cartAbove = [
       assert(authContextFile.includes('Deva@1009'), 'AuthContext contains admin 2 password');
 
       const loginFile = fs.readFileSync(path.join(__dirname, 'src', 'pages', 'AdminLogin.jsx'), 'utf8');
-      assert(loginFile.includes('balubalaji'), 'AdminLogin references balubalaji');
-      assert(loginFile.includes('deva049'), 'AdminLogin references deva049');
+      assert(!loginFile.includes('balubalaji or deva049'), 'AdminLogin has removed admin username placeholder');
+      assert(!loginFile.includes('Configured Showroom Administrators'), 'AdminLogin has removed visible admin accounts list');
+      assert(!loginFile.includes('Connected to Supabase'), 'AdminLogin has removed database status notice');
 
       console.log(`\n==============================================`);
       console.log(`RESULTS: ${passCount} passed, ${failCount} failed.`);
