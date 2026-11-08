@@ -53,3 +53,4 @@ DROP POLICY IF EXISTS "Allow delete products" ON public.products;
 CREATE POLICY "Allow delete products"
     ON public.products FOR DELETE TO public
     USING (true);
+
