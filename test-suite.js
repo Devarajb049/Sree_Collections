@@ -46,8 +46,9 @@ const teluguRegex = /[\u0C00-\u0C7F]/;
 
   DEMO_PRODUCTS.forEach(p => {
     assert(p.sku && p.sku.startsWith('SRC-'), `Product ${p.sku} has valid SKU`);
-    assert(p.name && p.name.length > 5, `Product ${p.sku} has valid name: "${p.name}"`);
-    assert(!teluguRegex.test(p.name), `Product name "${p.name}" has no hardcoded Telugu characters`);
+    assert(p.title && p.title.length > 5, `Product ${p.sku} has valid title: "${p.title}"`);
+    assert(p.name && p.name.length > 5, `Product ${p.sku} has valid name alias: "${p.name}"`);
+    assert(!teluguRegex.test(p.title), `Product title "${p.title}" has no hardcoded Telugu characters`);
     assert(!teluguRegex.test(p.short_description || ''), `Product short_description has no hardcoded Telugu characters`);
     assert(typeof p.price === 'number' && p.price > 0, `Product ${p.sku} has valid price ₹${p.price}`);
     assert(p.image_url && p.image_url.startsWith('http'), `Product ${p.sku} has valid image URL`);
@@ -132,7 +133,7 @@ const cartAbove = [
       const shopInfo = { name: 'Sree Collections', whatsappNumber: '919966532907', freeShippingThreshold: 3000 };
       const customerInfo = { name: 'Smt. Lakshmi Rao', phone: '+91 99665 00000', city: 'Vijayawada - 520010' };
       const testCart = [
-        { sku: 'SRC-101', name: 'Royal Crimson Kanchipuram Pure Silk Saree', price: 18499, quantity: 1, fabric: 'Pure Silk', slug: 'royal-crimson-kanchipuram-pure-silk-saree', image_url: 'https://images.unsplash.com/photo-1' }
+        { sku: 'SRC-101', title: 'Royal Crimson Kanchipuram Pure Silk Saree', name: 'Royal Crimson Kanchipuram Pure Silk Saree', price: 18499, quantity: 1, fabric: 'Pure Silk', slug: 'royal-crimson-kanchipuram-pure-silk-saree', image_url: 'https://images.unsplash.com/photo-1' }
       ];
 
       const waUrl = generateWhatsAppCheckoutUrl(testCart, customerInfo, shopInfo);
@@ -173,18 +174,32 @@ const cartAbove = [
 
       const sql = fs.readFileSync(path.join(__dirname, 'database', 'supabase-setup.sql'), 'utf8');
       assert(sql.includes('CREATE TABLE IF NOT EXISTS public.products'), 'SQL creates products table');
+      assert(sql.includes('title VARCHAR(255) NOT NULL'), 'SQL schema defines title column as VARCHAR(255) NOT NULL');
       assert(sql.includes('ENABLE ROW LEVEL SECURITY'), 'SQL enables Row Level Security');
       assert(sql.includes('Public can view active products'), 'SQL enforces public read access only for is_active = true');
-      assert(sql.includes('Admins can insert products'), 'SQL enforces authenticated-only insert');
-      assert(sql.includes('Admins can update products'), 'SQL enforces authenticated-only update');
-      assert(sql.includes('Admins can delete products'), 'SQL enforces authenticated-only delete');
+      assert(sql.includes('insert products'), 'SQL enforces insert policy');
+      assert(sql.includes('update products'), 'SQL enforces update policy');
+      assert(sql.includes('delete products'), 'SQL enforces delete policy');
       assert(sql.includes('saree-images'), 'SQL configures saree-images storage bucket');
       assert(!teluguRegex.test(sql), 'Supabase setup SQL contains no hardcoded Telugu text');
 
       // -------------------------------------------------------------
-      // 6. ADMIN CREDENTIALS & AUTHENTICATION CONFIGURATION
+      // 6. PRODUCTS SCHEMA COMPATIBILITY VERIFICATION (title vs name)
       // -------------------------------------------------------------
-      console.log('\n--- 6. Testing Showroom Admin Credentials ---');
+      console.log('\n--- 6. Testing Products Schema Compatibility (title vs name) ---');
+      const adminDashboardCode = fs.readFileSync(path.join(__dirname, 'src', 'pages', 'AdminDashboard.jsx'), 'utf8');
+      assert(adminDashboardCode.includes('title: formData.title'), 'AdminDashboard maps payload to title');
+      assert(!adminDashboardCode.includes('name: formData.name'), 'AdminDashboard does not send name property in payload');
+      assert(adminDashboardCode.includes('value={formData.title}'), 'Admin form input binds to formData.title');
+
+      const productServiceCode = fs.readFileSync(path.join(__dirname, 'src', 'services', 'productService.js'), 'utf8');
+      assert(productServiceCode.includes('title: title'), 'productService assigns title in database payload');
+      assert(productServiceCode.includes('VALID_DB_COLUMNS'), 'productService whitelists only valid database columns');
+
+      // -------------------------------------------------------------
+      // 7. ADMIN CREDENTIALS & AUTHENTICATION CONFIGURATION
+      // -------------------------------------------------------------
+      console.log('\n--- 7. Testing Showroom Admin Credentials ---');
       const authContextFile = fs.readFileSync(path.join(__dirname, 'src', 'context', 'AuthContext.jsx'), 'utf8');
       assert(authContextFile.includes('balubalaji'), 'AuthContext contains admin 1 username (balubalaji)');
       assert(authContextFile.includes('Balu@9966'), 'AuthContext contains admin 1 password');

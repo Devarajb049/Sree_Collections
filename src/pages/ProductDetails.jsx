@@ -77,7 +77,7 @@ const ProductDetails = () => {
     );
   }
 
-  const title = product.name || product.title;
+  const title = product.title || product.name || 'Traditional Silk Saree';
   const sku = product.sku || '';
   const price = Number(product.price);
   const originalPrice = product.original_price ? Number(product.original_price) : null;
@@ -100,7 +100,7 @@ const ProductDetails = () => {
     let msg = `*NAMASTE ${SHOP_CONFIG.name.toUpperCase()}!*\n`;
     msg += `I would like to order this saree from your website:\n\n`;
     msg += `*SAREE DETAILS:*\n`;
-    msg += `• Name: *${title}*\n`;
+    msg += `• Title: *${title}*\n`;
     msg += `• Code: ${sku}\n`;
     msg += `• Fabric: ${product.fabric || 'Pure Silk'}\n`;
     msg += `• Quantity: ${quantity}\n`;

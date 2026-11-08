@@ -59,7 +59,8 @@ export const CartProvider = ({ children }) => {
         const itemToAdd = {
           id: product.id || product.sku,
           sku: product.sku,
-          name: product.name || product.title,
+          title: product.title || product.name || 'Traditional Saree',
+          name: product.title || product.name || 'Traditional Saree',
           slug: product.slug,
           price: Number(product.price),
           original_price: product.original_price ? Number(product.original_price) : null,
@@ -147,7 +148,7 @@ export const CartProvider = ({ children }) => {
     cart.forEach((item, index) => {
       const itemTotal = item.price * item.quantity;
       msg += `----------------------------------------\n`;
-      msg += `${index + 1}. *${item.name}*\n`;
+      msg += `${index + 1}. *${item.title || item.name}*\n`;
       msg += `   • Code: ${item.sku}\n`;
       msg += `   • Fabric: ${item.fabric}\n`;
       if (item.color) msg += `   • Color: ${item.color}\n`;

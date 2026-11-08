@@ -20,13 +20,14 @@ const CartItem = ({ item }) => {
   };
 
   const itemTotal = item.price * item.quantity;
+  const itemTitle = item.title || item.name || 'Traditional Saree';
 
   return (
     <div className="cart-item">
       <div className="cart-item-img">
         <img
           src={item.image_url}
-          alt={item.name}
+          alt={itemTitle}
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
@@ -35,7 +36,7 @@ const CartItem = ({ item }) => {
       </div>
 
       <div className="cart-item-info">
-        <h4 className="cart-item-title">{item.name}</h4>
+        <h4 className="cart-item-title">{itemTitle}</h4>
         <span className="cart-item-fabric">
           {item.fabric} &bull; Code: {item.sku}
         </span>
@@ -72,7 +73,7 @@ const CartItem = ({ item }) => {
           className="cart-remove-item-btn"
           onClick={handleRemove}
           title="Remove from Cart"
-          aria-label={`Remove ${item.name}`}
+          aria-label={`Remove ${itemTitle}`}
         >
           <Trash2 size={18} />
         </button>
