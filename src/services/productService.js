@@ -6,8 +6,8 @@
  * seamlessly falls back to LocalStorage demo inventory otherwise.
  */
 
-import { supabase, isSupabaseConfigured, SHOP_CONFIG } from '../lib/supabase';
-import { DEMO_PRODUCTS } from '../data/demoProducts';
+import { supabase, isSupabaseConfigured, SHOP_CONFIG } from '../lib/supabase.js';
+import { DEMO_PRODUCTS } from '../data/demoProducts.js';
 
 const LOCAL_STORAGE_KEY = 'sree_admin_custom_products';
 
