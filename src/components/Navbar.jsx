@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ShoppingBag, Menu, X, Phone, ShieldCheck, Lock, Sparkles } from 'lucide-react';
+import { ShoppingBag, Menu, X, Phone, ShieldCheck, Lock, Instagram } from 'lucide-react';
 import GoogleTranslate from './GoogleTranslate';
 import { useCart } from '../context/CartContext';
 import { SHOP_CONFIG } from '../lib/supabase';
@@ -16,16 +16,22 @@ const Navbar = () => {
     <>
       {/* Top Announcement Bar */}
       <aside className="announcement-bar zari-border-top">
-        <div className="container announcement-container">
-          <div className="announcement-message">
-            <Sparkles size={14} className="announcement-sparkle" />
-            <span>Free Insured Shipping Across India on Orders Above ₹3,000 | Direct WhatsApp Ordering</span>
-          </div>
-
+        <div className="container announcement-container" style={{ justifyContent: 'flex-end' }}>
           <div className="announcement-actions">
             <a href={`tel:${SHOP_CONFIG.whatsappNumber}`} className="announcement-phone">
               <Phone size={12} />
               <span>{SHOP_CONFIG.phoneNumber}</span>
+            </a>
+            <a
+              href={SHOP_CONFIG.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="announcement-phone"
+              style={{ color: '#E1306C' }}
+              title="Follow Sree Collections on Instagram"
+            >
+              <Instagram size={12} />
+              <span>Instagram</span>
             </a>
             <Link to="/admin" className="announcement-admin-link">
               <Lock size={12} />
@@ -179,3 +185,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

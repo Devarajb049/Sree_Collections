@@ -24,3 +24,4 @@ const CategoryFilter = ({ activeCategory = 'all', onSelectCategory }) => {
 };
 
 export default CategoryFilter;
+

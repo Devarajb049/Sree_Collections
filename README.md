@@ -1,240 +1,213 @@
-# Sree Collections (శ్రీ కలెక్షన్స్) – Premium Traditional Indian Saree E-Commerce & WhatsApp Ordering Website
+# Sree Collections – Premium React Saree E-Commerce Website
 
-A complete, responsive, production-ready saree catalogue and WhatsApp ordering website designed with a luxury South Indian showroom aesthetic (Deep Maroon, Royal Gold, Ivory, and White). 
+A production-ready, fully responsive React.js e-commerce application and WhatsApp ordering platform designed for **Sree Collections**, an authentic Indian traditional saree showroom. 
 
-Designed for 100% static hosting on **Cloudflare Pages**, with a scalable **Supabase** backend (PostgreSQL database, Row Level Security, Supabase Auth, and Storage for saree photos).
-
----
-
-## 🌟 Key Features
-
-### 1. Customer Storefront (`index.html`)
-- **Royal Traditional Aesthetics**: Inspired by high-end South Indian silk showrooms with gold zari accents, subtle Indian motifs, and luxury typography (`Cinzel`, `Playfair Display`, `Plus Jakarta Sans`, and `Noto Sans Telugu`).
-- **Bilingual Experience**: Dual English & Telugu welcomes, saree titles, and category titles.
-- **Rich Saree Catalogue**:
-  - Live search by saree title, fabric, color, or product code (SKU).
-  - Category filters: Kanchipuram Silk, Banarasi Silk, Pattu Sarees, Handloom Cotton, Fancy & Organza, Bridal/Wedding Sarees, Daily Wear.
-  - Sorting: Featured, Price (Low to High), Price (High to Low), New Arrivals, and Biggest Discounts.
-  - Availability filter (All vs In Stock only) and Fabric filters.
-- **Detailed Saree Specifications Modal**:
-  - High-res photography preview.
-  - Saree specifications: Fabric, Zari type, Blouse piece details, Length, and Care instructions.
-  - Single-click direct WhatsApp enquiry button.
-- **Interactive Shopping Cart**:
-  - Stored and persisted in `localStorage`.
-  - Increment, decrement, and item removal.
-  - Subtotal and free shipping qualification progress bar (Free delivery over ₹3,000).
-- **Formatted WhatsApp Checkout**:
-  - Collects customer name, phone, delivery city/pincode, and special requests.
-  - Generates a rich, structured WhatsApp order message itemizing product names, SKUs, individual prices, product page web links, and image links.
-  - Direct click-to-chat opens with the showroom's configured WhatsApp number.
-- **Demo Catalogue Safety**:
-  - Sample products are clearly marked with a `Demo Saree` badge, ensuring transparency when running before live database connection.
-
-### 2. Admin Dashboard (`admin.html`)
-- **Supabase Authentication**: Secure login for showroom managers using email and password.
-- **Real-Time Inventory Overview**: Stat counters for total sarees, active listings, low-stock/sold-out alerts, and categories.
-- **Full Saree CRUD Operations**:
-  - Add new sarees with comprehensive attributes (titles in EN & TE, SKU, prices, fabrics, zari type, blouse details, etc.).
-  - Upload saree photos directly to the Supabase Storage bucket (`saree-images`) or specify external image URLs.
-  - Edit existing saree descriptions, pricing, and stock status.
-  - Delete sarees with a confirmation dialog.
-- **Quick Controls in Table**:
-  - Toggle stock status (`In Stock`, `Low Stock`, `Sold Out`) directly in table.
-  - Show / Hide sarees from customer storefront with one click.
-- **Demo / LocalStorage Mode**:
-  - If Supabase is not yet configured, administrators can still test the entire dashboard workflow via LocalStorage.
-- **One-Click Data Seeding**:
-  - Includes a "Seed 12 Demo Sarees" button to instantly populate a fresh Supabase database with curated handloom sarees.
+Features an English-first interface, luxury South Indian showroom aesthetics (Deep Maroon, Royal Gold, Ivory, and White), an official **Google Website Translator** integration to translate dynamically to Telugu, global cart management via React Context API, protected Admin Dashboard with Supabase Auth, and automated deployment configuration for **Cloudflare Pages**.
 
 ---
 
-## 📁 Project Structure
+## 🌟 Key Application Features
+
+### 1. English-First Experience with Google Translate Integration
+- **Pure English Content**: All headings, navigation labels, category names, descriptions, buttons, and checkout labels are authored in clean, professional English with zero hardcoded Telugu text.
+- **Google Website Translator Button (`src/components/GoogleTranslate.jsx`)**:
+  - Embedded in the top navigation bar with luxury maroon and gold styling.
+  - Automatically loads Google Translate script (`element.js`) and initializes the widget with source language `en` and target language `te` (Telugu).
+  - Toggles between English (original) and Telugu dynamically without page reloads.
+  - Seamlessly maintains translation across React Router page transitions.
+  - Hides default clunky Google iframe banners using clean CSS rules (`.goog-te-banner-frame { display: none !important; }`).
+
+### 2. Customer Website Pages & Routing
+- `/` — **Home**: Hero banner with pure silk certification highlights, category browser, featured sarees, bridal pattu showcase, pillars of trust, and customer reviews.
+- `/collections` — **All Collections**: Full catalogue with live debounced search, category filter pills, sorting (price asc/desc, newest, discounts), and fabric filters.
+- `/category/:slug` — **Category Collections**: Dedicated pages for Kanchipuram Silk, Banarasi, Pattu, Cotton, Fancy, Wedding, and Daily Wear.
+- `/product/:id` — **Product Details**: High-resolution image gallery, price breakdown, discount badge, detailed specifications table (Fabric, Zari type, Blouse piece, Saree length, Care instructions), quantity selector, instant WhatsApp order button, and similar saree recommendations.
+- `/cart` — **Shopping Cart**: Item quantity controls, subtotal, delivery fee calculation, free shipping progress bar (orders above ₹3,000), customer delivery form, and formatted WhatsApp checkout.
+- `/about` — **About Us**: Sree Collections heritage, artisan weaver empowerment, and Silk Mark guarantee.
+- `/contact` — **Contact Showroom**: Address, phone numbers, working hours, and WhatsApp inquiry form.
+
+### 3. Shopping Cart & WhatsApp Checkout
+- **State Management**: Built with React Context API (`CartContext.jsx`) and persisted in `localStorage`.
+- **Stock Limit Enforced**: Prevents visitors from adding quantities exceeding available inventory.
+- **WhatsApp Checkout Generator**:
+  - Itemizes saree titles, SKU codes, fabrics, colors, quantities, individual rates, and item totals.
+  - Generates clickable web links and image URLs for each saree.
+  - Automatically formats the WhatsApp click-to-chat URL:
+    `https://wa.me/<whatsappNumber>?text=<encoded_message>`
+
+### 4. Admin Dashboard (`/admin`)
+- **Protected Routing**: Protected by `ProtectedRoute.jsx` and Supabase Auth session tracking.
+- **Showroom Overview**: Stat counters for total inventory, active listings, low-stock/out-of-stock items, and distinct categories.
+- **Full Saree CRUD**:
+  - Add new sarees with comprehensive fields and direct image upload to the Supabase Storage bucket (`saree-images`) or external image URL.
+  - Edit existing sarees, adjust pricing, and modify descriptions.
+  - Delete sarees with a safe confirmation dialog.
+  - Quick inline controls: toggle active visibility (`Visible` / `Hidden`) and stock status (`In Stock`, `Low Stock`, `Sold Out`) directly in the table.
+- **Demo / LocalStorage Mode**: If Supabase credentials are not yet entered in `.env`, showroom managers can test all dashboard features via local demo mode without being blocked.
+- **One-Click Seeding**: Includes a "Seed 12 Sarees" button to populate a fresh Supabase database with curated sarees.
+
+### 5. Backend & Database Security
+- **PostgreSQL Database (`database/supabase-setup.sql`)**: Complete table schema, indexes, constraints, and automatic `updated_at` trigger.
+- **Row Level Security (RLS)**:
+  - Public anonymous read access restricted strictly to `is_active = true`.
+  - Admin-only access for `INSERT`, `UPDATE`, and `DELETE` (restricted to authenticated users).
+- **Public Storage Bucket (`saree-images`)**:
+  - Public read policy for customer storefront.
+  - Authenticated admin upload, update, and delete policies.
+- **Zero Secret Exposure**: Only the public anonymous key (`VITE_SUPABASE_ANON_KEY`) is ever bundled. The Supabase `service_role` key is strictly prohibited on the client.
+
+---
+
+## 📁 Project Architecture
 
 ```
-Sree_Collections/
-├── index.html                    # Main customer storefront
-├── admin.html                    # Secure admin dashboard
-├── css/
-│   ├── styles.css                # Storefront styling (mobile-first, royal maroon/gold)
-│   └── admin.css                 # Admin dashboard styling
-├── js/
-│   ├── config.js                 # Central configuration (WhatsApp #, Supabase URL/key)
-│   ├── products-data.js          # Default curated demo inventory & categories
-│   ├── app.js                    # Storefront controller & WhatsApp checkout
-│   └── admin.js                  # Admin authentication & inventory CRUD controller
-├── assets/
-│   └── icons/
-│       ├── logo.svg              # Sree Collections brand logo (traditional motif)
-│       └── favicon.svg           # Website browser favicon
+sree-collections/
+├── public/
+│   ├── assets/icons/
+│   │   ├── logo.svg              # Sree Collections brand logo
+│   │   └── favicon.svg           # Favicon
+│   ├── images/
+│   ├── _redirects                # Cloudflare Pages SPA fallback (/* /index.html 200)
+│   └── favicon.svg
+├── src/
+│   ├── assets/
+│   ├── components/
+│   │   ├── Navbar.jsx            # Sticky luxury navbar with Google Translate
+│   │   ├── Footer.jsx            # Showroom footer with quick links & contact
+│   │   ├── Hero.jsx              # Regal hero banner with call-to-actions
+│   │   ├── ProductCard.jsx       # Reusable saree card with zoom & quick actions
+│   │   ├── ProductGrid.jsx       # Responsive grid with skeleton loaders & empty state
+│   │   ├── SearchBar.jsx         # Live search bar with clear button
+│   │   ├── CategoryFilter.jsx    # Category filter pills
+│   │   ├── CartItem.jsx          # Shopping cart item row with quantity controls
+│   │   ├── WhatsAppButton.jsx    # Corner floating WhatsApp widget
+│   │   ├── GoogleTranslate.jsx   # Official Google Website Translator component
+│   │   ├── LoadingSpinner.jsx    # Luxury gold spinner
+│   │   └── ProtectedRoute.jsx    # Route guard for /admin
+│   ├── pages/
+│   │   ├── Home.jsx              # Homepage
+│   │   ├── Collections.jsx       # All collections catalogue
+│   │   ├── CategoryPage.jsx      # Dynamic category listings (/category/:slug)
+│   │   ├── ProductDetails.jsx    # Saree details view (/product/:id)
+│   │   ├── Cart.jsx              # Shopping cart & checkout (/cart)
+│   │   ├── About.jsx             # About us story (/about)
+│   │   ├── Contact.jsx           # Showroom contact (/contact)
+│   │   ├── AdminLogin.jsx        # Admin sign-in (/admin/login)
+│   │   ├── AdminDashboard.jsx    # Inventory management portal (/admin)
+│   │   └── NotFound.jsx          # 404 page
+│   ├── context/
+│   │   ├── CartContext.jsx       # Global cart state & WhatsApp checkout engine
+│   │   ├── AuthContext.jsx       # Supabase auth session provider
+│   │   └── LanguageContext.jsx   # Language state wrapper
+│   ├── data/
+│   │   └── demoProducts.js       # Curated 12 demo sarees (pure English)
+│   ├── lib/
+│   │   └── supabase.js           # Supabase client & centralized shop config
+│   ├── services/
+│   │   └── productService.js     # Unified database & storage service layer
+│   ├── styles/
+│   │   ├── global.css            # Base typography, tokens, and luxury themes
+│   │   └── responsive.css        # Responsive layouts & Google Translate styles
+│   ├── App.jsx                   # Application router
+│   └── main.jsx                  # React 18 root
 ├── database/
-│   └── supabase-setup.sql        # Supabase SQL schema, RLS policies, Storage setup & seed data
-└── README.md                     # Documentation & setup guide
+│   └── supabase-setup.sql        # Supabase PostgreSQL schema, RLS, & storage setup
+├── test-suite.js                 # Automated unit test suite (134 assertions passing)
+├── .env.example                  # Environment variables template
+├── .env                          # Local environment variables
+├── .gitignore
+├── PROJECT_SKILLS.md             # Antigravity Agent Skills report
+├── vite.config.js                # Vite build configuration with chunk optimization
+├── package.json
+├── index.html                    # Root HTML template
+└── README.md
 ```
 
 ---
 
-## 🚀 Step-by-Step Setup Guide
+## 🚀 Quick Start Guide
 
-### Step 1: Configure Store Information (`js/config.js`)
-
-Open `js/config.js` and update your shop details:
-
-```javascript
-const CONFIG = {
-  shop: {
-    name: "Sree Collections",
-    nameTe: "శ్రీ కలెక్షన్స్",
-    phone: "+91 98765 43210",
-    // Set your 10-digit WhatsApp number with country code (no '+' or spaces)
-    whatsappNumber: "919876543210",
-    email: "orders@sreecollections.com",
-    address: "Door No. 40-1-52, MG Road, Near Benz Circle, Vijayawada, Andhra Pradesh - 520010, India",
-    freeShippingThreshold: 3000
-  },
-  supabase: {
-    url: "YOUR_SUPABASE_PROJECT_URL",       // e.g., https://abcdefghijkl.supabase.co
-    anonKey: "YOUR_SUPABASE_ANON_KEY",      // Your public anon key
-    storageBucket: "saree-images"
-  }
-};
+### 1. Install Dependencies
+```bash
+npm install
 ```
 
----
+### 2. Configure Environment Variables (`.env`)
+Copy `.env.example` to `.env` and enter your store credentials:
 
-### Step 2: Set Up Supabase Backend
+```env
+# Supabase Configuration (From Supabase Dashboard -> Project Settings -> API)
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 
-1. **Create a Supabase Project**:
-   - Go to [supabase.com](https://supabase.com) and create a free project.
-   - Choose a region close to your target audience (e.g., `South Asia - Mumbai / ap-south-1`).
+# Shop Business Information
+VITE_SHOP_NAME="Sree Collections"
+VITE_SHOP_WHATSAPP=919876543210
+VITE_SHOP_PHONE="+91 98765 43210"
+VITE_SHOP_EMAIL="orders@sreecollections.com"
+VITE_SHOP_ADDRESS="Door No. 40-1-52, MG Road, Near Benz Circle, Vijayawada, Andhra Pradesh - 520010"
+```
 
-2. **Execute Database Setup Script**:
-   - In your Supabase dashboard, click **SQL Editor** on the left menu.
-   - Click **New query**, open `database/supabase-setup.sql` from this repository, copy its entire contents, and paste into the editor.
-   - Click **Run**.
-   - This automatically creates:
-     - The `products` table with all fields and indexes.
-     - Row Level Security (RLS) policies allowing public read of active items and admin full CRUD.
-     - The `saree-images` public storage bucket and upload policies.
-     - Initial seed data of 12 traditional sarees.
+### 3. Run Locally in Development Mode
+```bash
+npm run dev
+```
+Open `http://localhost:5173` in your browser.
 
-3. **Get API Credentials**:
-   - In Supabase, go to **Project Settings** &rarr; **API**.
-   - Copy the **Project URL** and paste it as `supabase.url` in `js/config.js`.
-   - Copy the **Project API Key (`anon` / `public`)** and paste it as `supabase.anonKey` in `js/config.js`.
-   - ⚠️ *Security note: Never use the `service_role` key in frontend code.*
-
-4. **Create the First Admin User**:
-   - In Supabase, go to **Authentication** &rarr; **Users**.
-   - Click **Add User** &rarr; **Create user**.
-   - Enter your admin email (e.g., `admin@sreecollections.com`) and choose a strong password.
-   - Toggle **Auto Confirm User?** to `ON` (or confirm via email).
-   - You can now log in at `yourdomain.com/admin.html` with these credentials!
-
----
-
-### Step 3: Test Locally
-
-You can run the built-in automated test suite:
-```powershell
+### 4. Run Automated Test Suite
+```bash
 node test-suite.js
 ```
-This runs 115 unit assertions covering product integrity, category validation, cart math, free shipping thresholds, WhatsApp URL generation, and SQL policy verification.
+Runs 134 automated unit assertions verifying data purity, cart math, WhatsApp URL encoding, Google Translate component configuration, and SQL RLS policies.
 
-To run the site in your browser:
-```powershell
-# Using Python
-python -m http.server 8080
-
-# Or using Node.js
-npx serve .
+### 5. Build for Production
+```bash
+npm run build
 ```
-
-Open `http://localhost:8080` in your browser.
+Creates an optimized static production bundle in `dist/` ready for Cloudflare Pages.
 
 ---
 
-### Step 4: Deploy to Cloudflare Pages
+## 🗄️ Setting Up Supabase Backend
 
-Cloudflare Pages provides global edge hosting with free SSL, zero maintenance, and fast loading across India.
+1. **Create Supabase Project**: Go to [supabase.com](https://supabase.com) and create a project in region `ap-south-1` (Mumbai).
+2. **Execute Database Setup Script**:
+   - Open **SQL Editor** in the Supabase Dashboard.
+   - Paste the contents of `database/supabase-setup.sql` and click **Run**.
+   - This creates the `products` table, Row Level Security policies, the `saree-images` storage bucket, and seeds 12 traditional sarees.
+3. **Copy API Credentials**:
+   - In **Project Settings** &rarr; **API**, copy the **Project URL** and **`anon` public key** into your `.env` file.
+4. **Create Admin User**:
+   - In **Authentication** &rarr; **Users**, click **Add User** &rarr; **Create user**.
+   - Enter your admin email and password. Toggle **Auto Confirm User?** to `ON`.
+   - You can now log in at `/admin/login`!
 
-#### Option A: Direct Upload (Drag and Drop - Fastest)
-1. Log in to [dash.cloudflare.com](https://dash.cloudflare.com).
-2. Go to **Workers & Pages** &rarr; **Create application** &rarr; **Pages** &rarr; **Upload assets**.
+---
+
+## ☁️ Deploying to Cloudflare Pages
+
+### Option A: Direct Upload (Drag and Drop - Fastest)
+1. Run `npm run build` locally.
+2. In [dash.cloudflare.com](https://dash.cloudflare.com) &rarr; **Workers & Pages** &rarr; **Create application** &rarr; **Pages** &rarr; **Upload assets**.
 3. Name your project (e.g., `sree-collections`).
-4. Drag and drop the `Sree_Collections` folder.
+4. Drag and drop the `dist/` folder.
 5. Click **Deploy site**.
-6. Your website is immediately live at `https://sree-collections.pages.dev`!
+6. Cloudflare automatically uses `dist/_redirects` to enable smooth React Router client-side routing.
 
-#### Option B: Deploy via GitHub / GitLab
-1. Push this folder to a GitHub repository:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial Sree Collections Release"
-   git remote add origin https://github.com/your-username/sree-collections.git
-   git push -u origin main
-   ```
-2. In Cloudflare Dashboard &rarr; **Workers & Pages** &rarr; **Create application** &rarr; **Pages** &rarr; **Connect to Git**.
-3. Select your repository.
-4. Set build settings:
-   - **Framework preset**: None
-   - **Build command**: *(leave empty)*
-   - **Build output directory**: `.` (or root directory)
-5. Click **Save and Deploy**. Every push to `main` will automatically build and deploy.
+### Option B: Deploy via GitHub / GitLab
+1. Connect your repository to Cloudflare Pages.
+2. Build Settings:
+   - **Framework preset**: `Vite`
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+3. In **Settings** &rarr; **Environment variables**, add:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_SHOP_WHATSAPP`
+4. Click **Save and Deploy**. Every git push will automatically build and deploy!
 
 ---
 
-## 📱 WhatsApp Order Message Format
-
-When a customer clicks **"Order via WhatsApp / ఆర్డర్ చేయండి"**, the application formats a message sent to the store:
-
-```
-*NAMASTE SREE COLLECTIONS!*
-I would like to place an order from your website catalogue:
-
-*CUSTOMER DETAILS:*
-• Name: Smt. Ananya Rao
-• Phone: +91 98765 00000
-• Delivery City/Pincode: Hyderabad - 500081
-• Special Notes: Please share video before dispatch
-
-*ORDERED SAREES (2 items):*
-----------------------------------------
-1. *Royal Crimson Kanchipuram Pure Silk Saree*
-   • Code: SRC-101
-   • Fabric: Pure Kanchipuram Mulberry Silk
-   • Qty: 1 × ₹18,499 = ₹18,499
-   • Web Link: https://sree-collections.pages.dev/?product=SRC-101
-   • Image: https://images.unsplash.com/...
-----------------------------------------
-2. *Traditional Mangalagiri Pure Cotton Saree with Nizam Border*
-   • Code: SRC-105
-   • Fabric: 100% Pure Combed Handloom Cotton (80s count)
-   • Qty: 2 × ₹2,899 = ₹5,798
-   • Web Link: https://sree-collections.pages.dev/?product=SRC-105
-   • Image: https://images.unsplash.com/...
-----------------------------------------
-*Subtotal:* ₹24,297
-*Shipping:* FREE (Orders over ₹3,000)
-*ESTIMATED TOTAL: ₹24,297*
-----------------------------------------
-
-Please confirm availability and share payment options (UPI/GPay/PhonePe/Bank Transfer). Thank you!
-```
-
----
-
-## 🛡️ Security & Architecture Best Practices
-
-- **Zero Secret Exposure**: Only the public `anon` key is used in `js/config.js`. Row Level Security (RLS) protects write/edit/delete operations on PostgreSQL.
-- **Public Read Access**: Anonymous customers can only read sarees where `is_active = true`.
-- **Admin Write Verification**: Insert, update, and delete policies enforce `TO authenticated`.
-- **Public Storage Read**: Customers can load uploaded images without authentication tokens.
-
----
-
-## 💬 Support & Business Inquiries
-- **Showroom Address**: Door No. 40-1-52, MG Road, Near Benz Circle, Vijayawada, Andhra Pradesh - 520010
-- **Phone & WhatsApp**: +91 98765 43210
-- **Email**: orders@sreecollections.com
+## 🛡️ License & Trademarks
+All rights reserved &copy; 2026 **Sree Collections**.
+Handcrafted for traditional Indian handlooms and pure silk elegance.

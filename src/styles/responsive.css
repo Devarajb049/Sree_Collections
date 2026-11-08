@@ -116,7 +116,8 @@ body {
   gap: 1rem;
 }
 
-.announcement-phone, .announcement-admin-link {
+.announcement-phone,
+.announcement-admin-link {
   color: rgba(255, 255, 255, 0.85);
   font-size: 0.78rem;
   display: inline-flex;
@@ -124,7 +125,8 @@ body {
   gap: 4px;
 }
 
-.announcement-phone:hover, .announcement-admin-link:hover {
+.announcement-phone:hover,
+.announcement-admin-link:hover {
   color: var(--color-gold-bright);
 }
 
@@ -154,7 +156,7 @@ body {
 .brand-logo-img {
   width: 48px;
   height: 48px;
-  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.4));
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.4));
   transition: transform 0.3s ease;
 }
 
@@ -211,11 +213,13 @@ body {
   transition: width 0.3s ease;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
   color: var(--color-gold-shimmer);
 }
 
-.nav-link:hover::after, .nav-link.active::after {
+.nav-link:hover::after,
+.nav-link.active::after {
   width: 100%;
 }
 
@@ -884,9 +888,17 @@ body {
 }
 
 @keyframes pulseSkeleton {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
 }
 
 /* Empty State */
@@ -1139,7 +1151,8 @@ body {
   margin-bottom: 2px;
 }
 
-.contact-detail p, .contact-detail a {
+.contact-detail p,
+.contact-detail a {
   font-size: 0.9rem;
   color: var(--color-text-muted);
 }
@@ -1567,7 +1580,9 @@ body {
   color: var(--color-maroon-primary);
 }
 
-.form-input, .form-select, .form-textarea {
+.form-input,
+.form-select,
+.form-textarea {
   width: 100%;
   padding: 0.65rem 0.85rem;
   border: 1px solid var(--color-ivory-border);
@@ -1576,7 +1591,9 @@ body {
   font-size: 0.9rem;
 }
 
-.form-input:focus, .form-select:focus, .form-textarea:focus {
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
   outline: none;
   border-color: var(--color-gold-primary);
   box-shadow: 0 0 0 3px rgba(197, 155, 39, 0.15);
@@ -1848,11 +1865,30 @@ body {
   text-transform: uppercase;
 }
 
-.table-badge-active { background: #dcfce7; color: #15803d; }
-.table-badge-hidden { background: #f1f5f9; color: #64748b; }
-.table-badge-instock { background: #dcfce7; color: #15803d; }
-.table-badge-lowstock { background: #fef3c7; color: #b45309; }
-.table-badge-soldout { background: #fee2e2; color: #b91c1c; }
+.table-badge-active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.table-badge-hidden {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.table-badge-instock {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.table-badge-lowstock {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.table-badge-soldout {
+  background: #fee2e2;
+  color: #b91c1c;
+}
 
 .table-actions-cell {
   display: flex;
@@ -2027,7 +2063,9 @@ body {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Floating WhatsApp Widget */
@@ -2070,8 +2108,15 @@ body {
 }
 
 @keyframes pulseRipple {
-  0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(1.4); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
 }
 
 /* Footer Styles */
@@ -2195,7 +2240,8 @@ body {
     align-items: center;
   }
 
-  .hero-cta-group, .hero-trust-badges {
+  .hero-cta-group,
+  .hero-trust-badges {
     justify-content: center;
   }
 
@@ -2208,7 +2254,8 @@ body {
     text-align: left;
   }
 
-  .about-grid, .contact-grid {
+  .about-grid,
+  .contact-grid {
     grid-template-columns: 1fr;
   }
 
@@ -2243,7 +2290,8 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .form-grid-2, .form-grid-3 {
+  .form-grid-2,
+  .form-grid-3 {
     grid-template-columns: 1fr;
   }
 

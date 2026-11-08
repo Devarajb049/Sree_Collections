@@ -13,3 +13,4 @@ const LoadingSpinner = ({ text = 'Loading Saree Collections...' }) => {
 };
 
 export default LoadingSpinner;
+

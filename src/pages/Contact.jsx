@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Phone, Mail, Clock, MessageSquare, Send, Check } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, MessageSquare, Send, Check, Instagram } from 'lucide-react';
 import { SHOP_CONFIG } from '../lib/supabase';
 
 const Contact = () => {
@@ -40,7 +40,7 @@ const Contact = () => {
               Showroom Visit &amp; Enquiries
             </h3>
             <p style={{ fontSize: '0.88rem', color: 'var(--color-text-muted)', marginBottom: '1.5rem' }}>
-              Visit our physical showroom in Vijayawada or connect with our saree styling consultants via WhatsApp or phone.
+              Visit our physical showroom in RR Layout, Madanapalle or connect with our saree styling consultants via WhatsApp or phone.
             </p>
 
             <div className="contact-info-list">
@@ -51,6 +51,24 @@ const Contact = () => {
                 <div className="contact-detail">
                   <strong>Showroom Address:</strong>
                   <p>{SHOP_CONFIG.address}</p>
+                  <a
+                    href={SHOP_CONFIG.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      marginTop: '0.45rem',
+                      color: 'var(--color-maroon-primary)',
+                      fontSize: '0.82rem',
+                      fontWeight: '600',
+                      textDecoration: 'underline'
+                    }}
+                  >
+                    <MapPin size={14} />
+                    <span>Open in Google Maps &rarr;</span>
+                  </a>
                 </div>
               </div>
 
@@ -98,6 +116,23 @@ const Contact = () => {
                 <div className="contact-detail">
                   <strong>Showroom Timings:</strong>
                   <p>{SHOP_CONFIG.workingHours}</p>
+                </div>
+              </div>
+
+              <div className="contact-item">
+                <div className="contact-icon-box">
+                  <Instagram size={20} />
+                </div>
+                <div className="contact-detail">
+                  <strong>Official Instagram Page:</strong>
+                  <a
+                    href={SHOP_CONFIG.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#E1306C', fontWeight: 'bold' }}
+                  >
+                    {SHOP_CONFIG.instagramHandle}
+                  </a>
                 </div>
               </div>
             </div>
@@ -162,9 +197,78 @@ const Contact = () => {
             </form>
           </div>
         </div>
+
+        {/* Showroom Map & Directions Section */}
+        <div style={{ marginTop: '3rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
+            <span className="section-eyebrow">Visit Our Showroom</span>
+            <h3 style={{ fontFamily: 'var(--font-royal)', color: 'var(--color-maroon-primary)', fontSize: '1.6rem', marginTop: '0.25rem' }}>
+              Find Us on Google Maps
+            </h3>
+            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+              Located in RR Layout, Madanapalle. Walk in to explore authentic handlooms and bridal silk sarees.
+            </p>
+          </div>
+
+          <div style={{
+            borderRadius: '12px',
+            overflow: 'hidden',
+            border: '1px solid var(--color-gold-border)',
+            boxShadow: 'var(--shadow-md)',
+            background: '#ffffff'
+          }}>
+            <iframe
+              title="Sree Collections Showroom Location on Google Maps"
+              src="https://maps.google.com/maps?q=RR+Layout,+Madanapalle,+Andhra+Pradesh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              width="100%"
+              height="360"
+              style={{ border: 0, display: 'block' }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            <div style={{
+              background: '#ffffff',
+              padding: '1rem 1.5rem',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '1rem',
+              borderTop: '1px solid var(--color-gold-border)'
+            }}>
+              <div>
+                <strong style={{ color: 'var(--color-maroon-primary)', fontSize: '1.05rem', display: 'block' }}>
+                  Sree Collections Showroom
+                </strong>
+                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
+                  {SHOP_CONFIG.address} &bull; Open All 7 Days ({SHOP_CONFIG.workingHours})
+                </p>
+              </div>
+              <a
+                href={SHOP_CONFIG.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-gold"
+                style={{
+                  fontSize: '0.88rem',
+                  padding: '0.65rem 1.25rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  textDecoration: 'none'
+                }}
+              >
+                <MapPin size={16} />
+                <span>Get Directions on Google Maps</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default Contact;
+

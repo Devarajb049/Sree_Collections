@@ -280,7 +280,7 @@ const AdminDashboard = () => {
             <span>Storefront</span>
           </Link>
           <span className="admin-email-tag">
-            {isDemoAdmin ? 'Demo Admin (LocalStorage)' : (user?.email || 'Admin')}
+            {isDemoAdmin ? 'Demo Admin (LocalStorage)' : (user?.name || user?.username || user?.email || 'Admin')}
           </span>
           <button type="button" onClick={handleLogout} className="btn-admin-logout">
             <LogOut size={13} style={{ marginRight: '4px' }} />
@@ -856,3 +856,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+

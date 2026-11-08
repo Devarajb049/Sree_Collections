@@ -46,3 +46,4 @@ const ProductGrid = ({ products = [], loading = false, onResetFilters }) => {
 };
 
 export default ProductGrid;
+

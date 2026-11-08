@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, Clock, MessageSquare, ShieldCheck, Heart } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, MessageSquare, ShieldCheck, Heart, Instagram } from 'lucide-react';
 import { SHOP_CONFIG } from '../lib/supabase';
 
 const Footer = () => {
@@ -25,6 +25,30 @@ const Footer = () => {
             <div className="footer-silk-mark-badge">
               <ShieldCheck size={18} />
               <span>100% Pure Tested Silk &amp; Zari Guarantee</span>
+            </div>
+
+            <div style={{ marginTop: '1rem' }}>
+              <a
+                href={SHOP_CONFIG.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  color: 'var(--color-gold-light)',
+                  fontSize: '0.88rem',
+                  textDecoration: 'none',
+                  padding: '0.4rem 0.85rem',
+                  border: '1px solid rgba(212, 175, 55, 0.35)',
+                  borderRadius: '20px',
+                  background: 'rgba(212, 175, 55, 0.08)',
+                  transition: 'all 0.25s ease'
+                }}
+              >
+                <Instagram size={16} />
+                <span>Follow {SHOP_CONFIG.instagramHandle}</span>
+              </a>
             </div>
           </div>
 
@@ -62,7 +86,15 @@ const Footer = () => {
             <div className="footer-contact-items">
               <div className="footer-contact-row">
                 <MapPin size={16} className="contact-icon" />
-                <span>{SHOP_CONFIG.address}</span>
+                <a
+                  href={SHOP_CONFIG.googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'none' }}
+                  title="Open Sree Collections on Google Maps"
+                >
+                  {SHOP_CONFIG.address}
+                </a>
               </div>
               <div className="footer-contact-row">
                 <Phone size={16} className="contact-icon" />
@@ -75,6 +107,17 @@ const Footer = () => {
               <div className="footer-contact-row">
                 <Clock size={16} className="contact-icon" />
                 <span>{SHOP_CONFIG.workingHours}</span>
+              </div>
+              <div className="footer-contact-row">
+                <Instagram size={16} className="contact-icon" />
+                <a
+                  href={SHOP_CONFIG.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'var(--color-gold-light)', fontWeight: '500' }}
+                >
+                  {SHOP_CONFIG.instagramHandle}
+                </a>
               </div>
             </div>
 
@@ -108,3 +151,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

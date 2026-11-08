@@ -29,3 +29,4 @@ const SearchBar = ({ value = '', onChange, placeholder = 'Search sarees by name,
 };
 
 export default SearchBar;
+

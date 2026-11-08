@@ -464,3 +464,22 @@ INSERT INTO public.products (
     false
 )
 ON CONFLICT (sku) DO NOTHING;
+
+-- ---------------------------------------------------------------------
+-- 6. SHOWROOM ADMIN USERS (Authentication Reference)
+-- ---------------------------------------------------------------------
+-- The website supports immediate login via the admin portal (/admin)
+-- for the following showroom managers:
+--
+-- 1. Username: balubalaji
+--    Email:    balubalaji@sreecollections.com
+--    Password: Balu@9966
+--
+-- 2. Username: deva049
+--    Email:    deva049@sreecollections.com
+--    Password: Deva@1009
+--
+-- Note: In the Supabase dashboard (Authentication -> Users -> Add User),
+-- you can also click "Create user" for each email and set their password
+-- to enable cloud-authenticated Supabase Auth sessions.
+
