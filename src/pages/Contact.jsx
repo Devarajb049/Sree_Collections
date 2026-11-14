@@ -249,7 +249,7 @@ const Contact = () => {
                 href={SHOP_CONFIG.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-gold"
+                className="btn-primary-gold btn-gold"
                 style={{
                   fontSize: '0.88rem',
                   padding: '0.65rem 1.25rem',

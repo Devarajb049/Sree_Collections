@@ -157,12 +157,14 @@ const Home = () => {
                 <img
                   src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=700&q=80"
                   alt="Muhurtham Red Bridal Saree"
+                  loading="lazy"
                 />
               </div>
               <div className="bridal-img-card">
                 <img
                   src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=700&q=80"
                   alt="Emerald Green Dharmavaram Pattu"
+                  loading="lazy"
                 />
               </div>
             </div>
@@ -237,7 +239,7 @@ const Home = () => {
             <div className="gold-divider"><span>◆</span></div>
           </div>
 
-          <div className="testimonials-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+          <div className="testimonials-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.5rem' }}>
             <div className="pillar-card" style={{ textAlign: 'left' }}>
               <div style={{ display: 'flex', color: '#d4af37', marginBottom: '0.5rem' }}>
                 {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="#d4af37" />)}

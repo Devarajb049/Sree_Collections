@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ShoppingBag, Menu, X, Phone, ShieldCheck, Lock, Instagram } from 'lucide-react';
 import GoogleTranslate from './GoogleTranslate';
@@ -11,6 +11,30 @@ const Navbar = () => {
   const location = useLocation();
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  // Close mobile drawer on route transition
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Handle escape key and lock body scroll when mobile menu is open
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+    if (mobileMenuOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   return (
     <>
@@ -95,12 +119,13 @@ const Navbar = () => {
                 {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
               </Link>
 
-              {/* Mobile Menu Hamburger */}
+              {/* Mobile / Tablet Menu Hamburger */}
               <button
                 type="button"
                 className="mobile-menu-toggle"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Toggle navigation menu"
+                aria-expanded={mobileMenuOpen}
               >
                 {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
               </button>
@@ -108,11 +133,23 @@ const Navbar = () => {
           </nav>
         </div>
 
-        {/* Mobile Navigation Drawer */}
-        <div className={`mobile-nav-drawer ${mobileMenuOpen ? 'open' : ''}`}>
+        {/* Mobile Navigation Backdrop Overlay */}
+        <div
+          className={`mobile-nav-backdrop ${mobileMenuOpen ? 'open' : ''}`}
+          onClick={closeMobileMenu}
+          aria-hidden="true"
+        />
+
+        {/* Mobile / Tablet Navigation Drawer */}
+        <div className={`mobile-nav-drawer ${mobileMenuOpen ? 'open' : ''}`} aria-hidden={!mobileMenuOpen}>
           <div className="mobile-nav-header">
             <span className="brand-title-en" style={{ fontSize: '1.1rem' }}>SREE COLLECTIONS</span>
-            <button type="button" onClick={closeMobileMenu} className="mobile-nav-close">
+            <button
+              type="button"
+              onClick={closeMobileMenu}
+              className="mobile-nav-close"
+              aria-label="Close navigation menu"
+            >
               <X size={22} />
             </button>
           </div>

@@ -158,7 +158,7 @@ const ProductDetails = () => {
                     onClick={() => setSelectedImage(img)}
                     className={`thumb-btn ${selectedImage === img ? 'active' : ''}`}
                   >
-                    <img src={img} alt={`Thumbnail ${idx + 1}`} />
+                    <img src={img} alt={`Thumbnail ${idx + 1}`} loading="lazy" />
                   </button>
                 ))}
               </div>
